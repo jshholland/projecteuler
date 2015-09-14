@@ -12,7 +12,7 @@ fact 0 = 1
 fact n = n * fact (n-1)
 
 routes :: Integer -> Integer
-routes n = fact (2*n) `div` (2 * fact n)
+routes n = fact (2*n) `div` (fact n)^2
 
 main :: IO ()
 main = print $ routes 20
