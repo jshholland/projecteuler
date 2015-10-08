@@ -1,7 +1,6 @@
 module Main where
 
 import Control.Applicative ((<$>))
-import Data.Char (toLower)
 import Data.List (sort)
 import Data.Maybe (catMaybes)
 
@@ -20,8 +19,8 @@ What is the total of all the name scores in the file?
 -}
 
 nameScore :: Int -> String -> Int
-nameScore pos name = pos * score name
-  where score = sum . catMaybes . fmap (flip lookup $ zip ['A'..'Z'] [1..])
+nameScore pos = (pos *) .
+  sum . catMaybes . fmap (flip lookup $ zip ['A'..'Z'] [1..])
 
 splitCommas :: String -> [String]
 splitCommas s = let (l, s') = span (/= ',') s
