@@ -1,6 +1,6 @@
 module Main where
 
-import Control.Arrow ((&&&))
+import Control.Arrow ((&&&), (***))
 import Data.List (nub)
 
 {-
@@ -21,10 +21,15 @@ divisors n = filter (/= n) .  concat $
                         n `mod` m == 0]
 
 areAmicable :: Int -> Int -> Bool
-areAmicable n m = d n == m && d m == n
+areAmicable n m | n /= m    = d n == m && d m == n
+                | otherwise = False
 
-amicables :: [Int]
-amicables = head . filter (\x -> head x == x !! 2) $ map (iterate d) [1..]
+both :: (a -> Bool) -> (a, a) -> Bool
+both p = uncurry (&&) . (p *** p)
+
+amicablesUpTo :: Int -> [(Int, Int)]
+amicablesUpTo n = takeWhile (both (<= n)) . filter (uncurry areAmicable)
+  $ fmap (id &&& d) [1..]
 
 main :: IO ()
-main = print . sum . map fst . filter (uncurry areAmicable) $ fmap (id &&& d) [1..10000]
+main = print . sum . map fst $ amicablesUpTo 10000
