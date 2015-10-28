@@ -1,5 +1,8 @@
 module Main where
 
+import Data.List (elemIndex, maximumBy)
+import Data.Ord (comparing)
+
 {-
 A unit fraction contains 1 in the numerator. The decimal
 representation of the unit fractions with denominators 2 to 10 are
@@ -22,16 +25,18 @@ Find the value of d < 1000 for which 1/d contains the longest
 recurring cycle in its decimal fraction part.
 -}
 
-(./.) :: Int -> Int -> [Int]
-n ./. d = let (quot, rem) = n `quotRem` d in
-          quot : (rem*10) ./. d
-infixr 6 ./.
+rems :: Int -> Int -> [Int]
+n `rems` d = let r = n `rem` d in
+             r : (r*10) `rems` d
 
-frac :: Int -> [Int]
-frac = drop 1 . (1 ./.)
-
-repeats :: Eq a => Int -> [a] -> Bool
-repeats n xs = and $ zipWith (==) (take n xs) (take n $ drop n xs)
+repeatLength :: [Int] -> Int
+repeatLength [] = error "repeatLength: empty list"
+repeatLength (x:xs) = case elemIndex x xs of
+                        Just i -> i + 1
+                        Nothing -> 0
 
 main :: IO ()
-main = undefined
+main = print $ maximumBy (comparing $ repeatLength . rems 1) coprimeToTen
+
+coprimeToTen :: [Int]
+coprimeToTen = takeWhile (<1000) [n | n <- [2..], n `mod` 2 /= 0, n `mod` 5 /= 0]
