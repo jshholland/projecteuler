@@ -37,8 +37,10 @@ isPrime n | n > 1     = and [n `mod` m /= 0
                               | m <- takeWhile ((<= n) . (^2)) (2:[3,5..])]
           | otherwise = False
 
+primesList = map isPrime [0..]
+
 isPrime' :: Int -> Bool
-isPrime' n | n > 1     = map isPrime [0..] !! n
+isPrime' n | n > 1     = primesList !! n
            | otherwise = False
 
 bestQuad :: Quad
